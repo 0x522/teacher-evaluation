@@ -1,0 +1,14 @@
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+node_modules/
+.wrangler/
+
+# Local previews, generated screenshots, OS files and logs
+tmp/
+.DS_Store
+*.log
+
+# Keep a safe configuration template in version control
+!.dev.vars.example

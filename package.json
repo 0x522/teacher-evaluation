@@ -1,0 +1,17 @@
+{
+  "name": "teacher-evaluation-assistant",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx wrangler@latest dev",
+    "deploy": "npx wrangler@latest deploy",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "wrangler": "^4.134.0"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  }
+}

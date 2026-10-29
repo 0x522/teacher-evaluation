@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="从本周课堂评价 Excel 批量生成多元智能成长记录。">
+  <title>Excel 批量填写｜儿童课程评价助手</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23286d59'/%3E%3Cpath d='M18 16h28v32H18zM18 27h28M29 16v32' fill='none' stroke='white' stroke-width='4'/%3E%3C/svg%3E">
+  <style>
+    :root{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:#242824;background:#f7f8f6;font-size:16px}
+    *{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:radial-gradient(circle at 75% 3%,#edf4ec 0,transparent 29%),#f7f8f6}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}
+    .app{min-height:100vh;display:grid;grid-template-columns:264px minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;background:#f4f6f3;border-right:1px solid #e5eae5;padding:28px 18px 20px;display:flex;flex-direction:column}
+    .brand{display:flex;align-items:center;gap:12px;padding:0 10px 25px;font-weight:700;font-size:.93rem;color:#26322c}.brandmark{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:#286d59;color:#fff;box-shadow:0 5px 12px rgba(27,91,67,.16);font-weight:800}
+    .side-caption{padding:20px 12px 10px;border-top:1px solid #e4e9e4;color:#88938a;font-size:.69rem;font-weight:800;letter-spacing:.14em}.sidebar h2{font-size:.74rem;letter-spacing:.05em;color:#8a948b;margin:0 12px 15px}.sidebar ul{list-style:none;margin:0;padding:0;display:grid;gap:5px}.sidebar li{display:flex;gap:9px;align-items:center;padding:10px;border-radius:11px;color:#58665b;font-size:.83rem;line-height:1.4}.sidebar li:first-child{background:#e7efe8;color:#315c46;font-weight:650}.step{flex:0 0 23px;height:23px;border-radius:50%;background:#fff;color:#61816b;display:grid;place-items:center;font-size:.7rem;font-weight:700}.privacy{margin-top:auto;background:#fff;border:1px solid #e5eae5;border-radius:15px;padding:16px;color:#738176;font-size:.75rem;line-height:1.65}.privacy strong{display:block;color:#435b47;font-size:.82rem;margin-bottom:7px}
+    main{padding:0 30px 44px;min-width:0}.container{max-width:1080px;margin:auto}.topbar{height:66px;border-bottom:1px solid #e8ece8;display:flex;align-items:center;justify-content:space-between;gap:16px}.topbar-left{display:flex;align-items:center;gap:10px;color:#748076;font-size:.76rem;font-weight:650}.topbar-left strong{color:#3b4c3f}.dot{width:4px;height:4px;border-radius:50%;background:#a7b3a9}.page-link{font-size:.73rem;color:#496653;background:#fff;border:1px solid #dce7de;border-radius:999px;padding:7px 11px;text-decoration:none;font-weight:700}.page-link:hover{background:#edf5ee}
+    .top{padding:36px 0 25px}.eyebrow{display:flex;align-items:center;gap:8px;color:#4c7960;font-size:.71rem;font-weight:800;letter-spacing:.13em;margin-bottom:10px}.eyebrow:before{content:'';width:18px;height:1px;background:#6a9d78}.top h1{font-size:clamp(1.8rem,2.5vw,2.25rem);font-weight:720;letter-spacing:-.05em;margin:0 0 9px;line-height:1.24;color:#242b25}.top p{color:#758077;font-size:.89rem;line-height:1.7;max-width:720px;margin:0}
+    .card{background:#fff;border:1px solid #e6ebe6;border-radius:19px;box-shadow:0 8px 30px rgba(41,60,45,.035);overflow:hidden}.card-head{padding:22px 25px 17px;border-bottom:1px solid #edf0ec;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.card-head h2{font-size:1.05rem;margin:0;color:#29342c}.card-head span{font-size:.75rem;color:#98a29a}.kicker{display:block;color:#80a78b;font-size:.63rem;font-weight:850;letter-spacing:.13em;margin-bottom:7px}.card-body{padding:24px 25px 26px}
+    .section{padding:0 0 23px;margin-bottom:23px;border-bottom:1px solid #edf0ed}.section:last-of-type{border-bottom:0;margin-bottom:0}.section-title{font-size:.85rem;font-weight:750;color:#39463c;margin:0 0 13px}.file-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.file-box{border:1px dashed #cfdacf;border-radius:13px;padding:16px;background:#fafcf9}.file-box label{display:block;font-size:.82rem;font-weight:700;color:#3d4b40;margin-bottom:5px}.file-box p{margin:0 0 11px;color:#879188;font-size:.73rem;line-height:1.55}.file-box input{width:100%;font-size:.78rem;color:#627066}
+    .metadata-grid{display:grid;grid-template-columns:.65fr 1fr 1fr 1fr;gap:12px}.field-wrap label{display:block;font-size:.81rem;color:#39463c;margin-bottom:9px;font-weight:700}.optional{font-size:.74rem;color:#9ba59c;font-weight:500;margin-left:4px}input[type=text],input[type=password],input[type=number],input[type=date]{width:100%;border:1px solid #e2e8e2;border-radius:11px;background:#fbfcfb;color:#27332b;padding:12px 13px;font-size:.89rem;outline:none}input:focus{background:#fff;border-color:#77a889;box-shadow:0 0 0 4px rgba(76,139,91,.10)}
+    .area-note{display:flex;align-items:center;gap:7px;color:#849186;font-size:.73rem;margin:0 0 12px}.area-note:before{content:'✦';color:#6b9b73}.tags{display:flex;flex-wrap:wrap;gap:8px}.tag{position:relative}.tag input{position:absolute;opacity:0;width:1px;height:1px}.tag span{display:inline-flex;padding:9px 12px;border:1px solid #e3e9e3;border-radius:999px;background:#fff;color:#657268;font-size:.78rem;font-weight:580}.tag input:checked+span{background:#e9f3e9;border-color:#87b990;color:#276b42}.tag input:focus-visible+span{outline:3px solid rgba(43,138,114,.25);outline-offset:2px}.length-control{margin-top:19px;max-width:520px;padding:15px 17px;border:1px solid #e5ebe5;border-radius:13px;background:#fafcf9}.length-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;color:#3d4b40;font-size:.79rem;font-weight:700}.length-value{color:#28704b;font-variant-numeric:tabular-nums}.length-control input[type=range]{width:100%;accent-color:#367b58;cursor:pointer}.length-scale{display:flex;justify-content:space-between;color:#a0aaa2;font-size:.66rem;margin-top:4px}
+    .credential{display:grid;grid-template-columns:minmax(220px,1fr) minmax(280px,1.3fr);gap:16px;align-items:end}.connection{display:inline-flex;align-items:center;gap:7px;margin-left:8px;padding:5px 9px;border-radius:99px;background:#e9f3ea;color:#32784e;font-size:.66rem}.connection:before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}.connection.offline{background:#fff4e5;color:#8a6427}.help{font-size:.73rem;line-height:1.6;color:#879188;margin:0}
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.primary,.secondary{border-radius:10px;padding:10px 15px;font-weight:680;font-size:.82rem;min-height:42px}.primary{border:0;background:#286e4d;color:#fff;box-shadow:0 5px 12px rgba(30,103,68,.12)}.primary:hover:not(:disabled){background:#205c40}.secondary{border:1px solid #dbe4dc;background:#fff;color:#42624c}.secondary:hover:not(:disabled){background:#edf5ee}.progress{font-variant-numeric:tabular-nums;color:#68806e;font-size:.76rem}.summary{margin-top:15px;padding:12px 14px;border-radius:11px;background:#f2f7f2;color:#42604a;font-size:.79rem;line-height:1.65}.summary.error{background:#fff0ef;color:#9b3732}.note{margin:13px 0 0;color:#8c968e;font-size:.72rem;line-height:1.65}footer{margin:19px 0 0;color:#a0aaa0;font-size:.71rem}
+    @media(max-width:900px){.app{grid-template-columns:220px minmax(0,1fr)}.metadata-grid{grid-template-columns:1fr 1fr}.credential{grid-template-columns:1fr}}
+    @media(max-width:740px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:0 18px 28px}.topbar{height:55px}.top{padding:28px 0 21px}.file-grid{grid-template-columns:1fr}}
+    @media(max-width:560px){main{padding:0 13px 24px}.page-link{font-size:.68rem}.metadata-grid{grid-template-columns:1fr}.card-head{padding:19px 18px 14px}.card-body{padding:20px 18px 22px}.actions{align-items:stretch;flex-direction:column}.actions button{width:100%}.progress{text-align:center}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Excel 批量填写流程">
+      <div class="brand"><span class="brandmark" aria-hidden="true">表</span><span>Excel 批量填写</span></div>
+      <div class="side-caption">BATCH WORKSPACE</div>
+      <h2>处理流程</h2>
+      <ul><li><span class="step">01</span><span>上传课堂评价与输出模板</span></li><li><span class="step">02</span><span>填写顶部信息并选择智能</span></li><li><span class="step">03</span><span>批量生成、核对并下载</span></li></ul>
+      <div class="privacy"><strong>数据说明</strong>Excel 在浏览器本地解析。生成时会发送学生姓名、课堂评价、所选维度和模板填写说明。草稿保存在当前浏览器，可恢复任务；正式结果请下载留存。</div>
+    </aside>
+    <main>
+      <div class="container">
+        <div class="topbar"><div class="topbar-left"><strong>教师工作台</strong><span class="dot"></span><span>Excel 批量填写</span></div><a class="page-link" href="/">← 返回单人课程评价</a></div>
+        <header class="top"><div class="eyebrow">EXCEL WORKSPACE</div><h1>批量填写多元智能成长记录。</h1><p>系统先按姓名匹配，遇到新学生会自动写入模板的空白姓名行。选齐两个文件后自动匹配，默认生成八个智能。先预览一名学生，再批量处理；暂停或刷新后都可继续未完成部分。</p></header>
+        <section class="card" aria-labelledby="batch-title">
+          <div class="card-head"><div><small class="kicker">本地解析 / DEEPSEEK 生成</small><h2 id="batch-title">Excel 文件与填写设置</h2></div><span>支持动态学生人数</span></div>
+          <div class="card-body">
+            <div class="summary" style="margin:0 0 20px"><span id="draft-status" role="status">正在检查本机草稿…</span><div class="actions" style="margin-top:8px"><button class="secondary" id="restore-draft" type="button" hidden>恢复上次任务</button><button class="secondary" id="clear-draft" type="button">清除本机草稿</button></div><p class="help">自动保存文件、学生评价和生成结果到当前浏览器，不保存口令。共用电脑使用后可清除草稿。</p></div>
+            <div class="section">
+              <h3 class="section-title">1. 选择文件</h3>
+              <div class="file-grid">
+                <div class="file-box"><label for="input-excel">本周课堂评价</label><p>表头保持为“序号 / 孩子姓名 / 本周课堂评价”。</p><input id="input-excel" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
+                <div class="file-box"><label for="output-template">多元智能成长记录模板</label><p>可以使用空模板；系统会自动追加学生姓名。</p><input id="output-template" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
+              </div>
+            </div>
+            <div class="section">
+              <h3 class="section-title">2. 填写成长记录顶部信息 <span class="optional">均可留空</span></h3>
+              <div class="metadata-grid" aria-label="成长记录顶部信息">
+                <div class="field-wrap"><label for="meta-week">周次</label><input id="meta-week" type="number" min="1" max="99" placeholder="例如：3"></div>
+                <div class="field-wrap"><label for="meta-date">记录日期</label><input id="meta-date" type="date"></div>
+                <div class="field-wrap"><label for="meta-teacher">带班老师</label><input id="meta-teacher" type="text" maxlength="30" placeholder="老师姓名"></div>
+                <div class="field-wrap"><label for="meta-class">班级</label><input id="meta-class" type="text" maxlength="30" placeholder="班级名称"></div>
+              </div>
+            </div>
+            <div class="section">
+              <h3 class="section-title">3. 选择本次生成的智能 <span class="optional">可多选</span></h3>
+              <p class="area-note" id="batch-area-count">请选择至少一个智能维度</p><div class="actions" style="margin-bottom:12px"><button class="secondary" type="button" id="select-all">全选八项</button><button class="secondary" type="button" id="select-none">清空选择</button></div><div class="tags" id="batch-tags"></div>
+              <div class="length-control">
+                <div class="length-head"><label for="note-length">每项亮点/观察记录字数</label><output id="note-length-value" class="length-value" for="note-length">130–150 字</output></div>
+                <input id="note-length" type="range" min="30" max="140" step="10" value="140" aria-label="每项亮点或观察记录的字数范围">
+                <div class="length-scale" aria-hidden="true"><span>简短</span><span>详细</span></div>
+              </div>
+            </div>
+            <div class="section">
+              <h3 class="section-title">4. 连接 DeepSeek</h3>
+              <div class="credential"><div class="field-wrap"><label for="access-code">个人访问口令 <span id="connection" class="connection" role="status" aria-live="polite">正在检查…</span></label><input id="access-code" type="password" autocomplete="off" spellcheck="false" placeholder="请输入个人访问口令"></div><p class="help">API Key 保存在 Cloudflare 服务端，无需在网页输入。个人口令只在当前页面暂存。</p></div>
+            </div>
+            <div class="actions"><button class="secondary" type="button" id="parse-excel">重新匹配文件</button><button class="secondary" type="button" id="preview-one" disabled>先生成一人预览</button><button class="primary" type="button" id="generate-batch" disabled>开始批量生成</button><button class="secondary" type="button" id="pause-batch" hidden>暂停</button><button class="secondary" type="button" id="download-excel" disabled>下载填写结果</button><span class="progress" id="batch-progress"></span></div>
+            <progress id="overall-progress" value="0" max="1" style="width:100%;margin-top:18px;accent-color:#286e4d" aria-label="生成进度"></progress><p class="help" id="next-step" style="margin-top:10px" role="status">先选择两个 Excel 文件，系统会自动匹配学生。</p><div class="actions" style="margin-top:16px"><input id="student-search" type="text" placeholder="搜索学生姓名" aria-label="搜索学生姓名" style="max-width:220px"><select id="student-filter" aria-label="筛选学生"><option value="all">全部学生</option><option value="pending">未完成</option><option value="failed">有失败记录</option></select><button class="secondary" type="button" id="students-all">全选当前名单</button><button class="secondary" type="button" id="students-none">取消当前名单</button><span id="student-count" class="help"></span></div><p class="help" style="margin-top:8px">筛选只改变显示范围；生成以勾选学生为准。预览会处理第一位勾选且尚未完成的学生。</p><div id="result-list" style="max-height:360px;overflow:auto;margin-top:14px" aria-label="学生匹配与生成结果"></div><div class="summary info" id="batch-summary" role="status" aria-live="polite" hidden></div>
+            <p class="note">新学生按模板工作表顺序写入空白姓名行。周次、日期、老师和班级会填写到所有成长记录工作表；留空则保留模板原内容。所选智能都会填写，未选择的列保持原样。</p>
+          </div>
+        </section>
+        <footer>请在正式使用前核对学生匹配、表现等级和观察记录。</footer>
+      </div>
+    </main>
+  </div>
+  <script src="/vendor/exceljs.min.js"></script>
+  <script type="module" src="/excel-page.js"></script>
+</body>
+</html>
