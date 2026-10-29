@@ -1,5 +1,13 @@
 # 儿童课程评价助手（Cloudflare Workers 版）
 
+## 图文使用文档
+
+- [使用指南首页](docs/wiki/Home.md)：单人评价、Excel 批处理、学生选择、预览、草稿恢复、下载规则和常见问题。
+- [下载 PDF 使用说明书](output/pdf/儿童课程评价助手_图文使用说明书.pdf)。
+
+文档包含 6 张实际界面插图；截图使用虚构学生，本机演示的连接状态不代表线上故障。
+
+
 这版把网页和 DeepSeek 代理放在同一个 Cloudflare Worker 上，浏览器只请求本站的 `/api/evaluate`，不再直接跨域调用 DeepSeek。DeepSeek API Key 只作为 Cloudflare Secret 保存在服务端。
 
 ## 部署
