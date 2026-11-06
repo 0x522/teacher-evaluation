@@ -211,13 +211,32 @@ export function clearIntelligenceResult(target, dimensionIds) {
   }
 }
 
+const originalValues = new WeakMap();
+
+export function hasOriginalResult(target, id) {
+  const columns = target.columns?.[id];
+  if (!columns) return false;
+  if (!originalValues.has(target)) originalValues.set(target, new Map());
+  const cached = originalValues.get(target);
+  if (!cached.has(id)) {
+    cached.set(id, [columns.level, columns.note].some(column => {
+      const value = target.worksheet.getCell(target.row, column).value;
+      return value != null && (typeof value !== 'string' || value.trim() !== '');
+    }));
+  }
+  return cached.get(id);
+}
+
 export function writeIntelligenceResult(target, intelligences) {
   const byId = new Map(intelligences.map(item => [item.id, item]));
   for (const dimension of DIMENSIONS.filter(item => byId.has(item.id))) {
     const columns = target.columns[dimension.id];
     const item = byId.get(dimension.id);
-    const hasEvidence = Number.isInteger(item?.level) && item.level >= 1 && item.level <= 5 && item.note;
-    target.worksheet.getCell(target.row, columns.level).value = hasEvidence ? item.level : 0;
-    target.worksheet.getCell(target.row, columns.note).value = hasEvidence ? String(item.note).trim() : null;
+    if (!columns) continue;
+    const protectedResult = hasOriginalResult(target, dimension.id);
+    if (protectedResult && !item.overwrite) continue;
+    const level = Number.isInteger(item.level) && item.level >= 0 && item.level <= 5 ? item.level : 0;
+    target.worksheet.getCell(target.row, columns.level).value = level;
+    target.worksheet.getCell(target.row, columns.note).value = String(item.note ?? '').trim() || null;
   }
 }

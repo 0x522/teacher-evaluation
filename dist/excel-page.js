@@ -2,6 +2,7 @@ import { createDraftStore, snapshotDraft } from './batch-draft.js';
 import { generateDimensionGroups } from './batch-request.js';
 import {
   DIMENSIONS,
+  hasOriginalResult,
   extractTemplateGuidance,
   findInputRecords,
   findTemplateMetadataTargets,
@@ -33,14 +34,21 @@ let draftEnabled = true;
 let draftRevision = 0;
 const selectedStudents = () => state.matches.filter(item => item.targets.length && item.selected !== false);
 const currentSignature = () => { const range = selectedNoteRange(); return `${range.noteMin}:${range.noteMax}`; };
-const pendingFor = item => selectedAreas().some(id => completedGroups.get(item)?.get(id) !== currentSignature());
+const protectedFor = (item, id) => !$('overwrite-existing').checked &&
+  item.targets.length > 0 && item.targets.every(target => hasOriginalResult(target, id));
+const completedFor = (item, id, signature) =>
+  completedGroups.get(item)?.get(id) === signature &&
+  (!$('overwrite-existing').checked || item.results?.get(id)?.overwrite ||
+    !item.targets.some(target => hasOriginalResult(target, id)));
+const pendingFor = item => selectedAreas().some(id => !protectedFor(item, id) && !completedFor(item, id, currentSignature()));
+$('overwrite-existing').addEventListener('change', () => { updateSelection(); renderResults(); saveDraft(); });
 function visibleStudents() {
   const query = $('student-search').value.trim();
   const filter = $('student-filter').value;
   return state.matches.filter(item => item.student.includes(query) && (filter === 'failed' ? item.error : filter === 'pending' ? pendingFor(item) : true));
 }
 function draftSettings() {
-  return { areas: selectedAreas(), length: $('note-length').value,
+  return { areas: selectedAreas(), length: $('note-length').value, overwrite: $('overwrite-existing').checked,
     metadata: Object.fromEntries(['meta-week', 'meta-date', 'meta-teacher', 'meta-class'].map(id => [id, $(id).value])) };
 }
 async function saveDraft() {
@@ -89,6 +97,7 @@ $('restore-draft').addEventListener('click', async () => {
     completedGroups = restored;
     tags.querySelectorAll('input').forEach(input => { input.checked = draft.settings.areas.includes(input.value); });
     $('note-length').value = draft.settings.length;
+    $('overwrite-existing').checked = Boolean(draft.settings.overwrite);
     Object.entries(draft.settings.metadata).forEach(([id, value]) => { $(id).value = value; });
     draftEnabled = true;
     $('download-excel').disabled = false;
@@ -151,7 +160,7 @@ function updateSelection() {
     : '请选择至少一个智能维度';
   const { noteMin, noteMax } = selectedNoteRange();
   const signature = `${noteMin}:${noteMax}`;
-  const pending = selectedStudents().reduce((sum, item) => sum + selected.filter(id => completedGroups.get(item)?.get(id) !== signature).length, 0);
+  const pending = selectedStudents().reduce((sum, item) => sum + selected.filter(id => !protectedFor(item, id) && !completedFor(item, id, signature)).length, 0);
   $('generate-batch').disabled = parsing || connecting || generating || !(state.workbook && state.readyCount && selected.length && pending);
   $('preview-one').disabled = $('generate-batch').disabled;
   if (!generating && state.workbook) {
@@ -198,11 +207,50 @@ function renderResults() {
     const count = item.results?.size || 0;
     title.textContent = `${item.student} · ${!item.targets.length ? '未匹配，请检查模板空位' : item.error || (count ? `已完成 ${count} 项，点击核对` : !item.notes?.trim() || item.notes.trim() === '/' ? '评价为空，将记 0 分' : '已匹配，等待生成')}`;
     row.append(title);
+    const action = (label, fn) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'secondary';
+      button.textContent = label;
+      button.disabled = generating || parsing || connecting;
+      button.addEventListener('click', fn);
+      return button;
+    };
+    if (item.targets.length) {
+      const preserved = DIMENSIONS.filter(d => protectedFor(item, d.id)).map(d => d.name);
+      if (preserved.length) {
+        const hint = document.createElement('p');
+        hint.textContent = '保留模板已有记录：' + preserved.join('、');
+        row.append(hint);
+      }
+      row.append(action('重新生成该学生所选智能', () => runBatch(false, item)));
+    }
     for (const result of item.results?.values() || []) {
       const text = document.createElement('p');
       text.textContent = `${DIMENSIONS.find(d => d.id === result.id)?.name} · ${result.level} 分：${result.note || '跳过（无观察记录）'}`;
       text.style.cssText = 'line-height:1.7;color:#627066';
-      row.append(text);
+      const edit = action('编辑分数和记录', () => {
+        if (generating || parsing || connecting) return;
+        const level = document.createElement('input');
+        level.type = 'number'; level.min = '0'; level.max = '5'; level.step = '1';
+        level.value = result.level; level.setAttribute('aria-label', '表现等级');
+        const note = document.createElement('textarea');
+        note.value = result.note; note.setAttribute('aria-label', '观察记录');
+        const save = action('保存修改', () => {
+          const score = Number(level.value);
+          if (generating || parsing || connecting) return;
+          if (level.value === '' || !Number.isInteger(score) || score < 0 || score > 5) {
+            return showSummary('请输入 0 到 5 的整数分数。', 'error');
+          }
+          const updated = { ...result, level: score, note: note.value.trim() };
+          item.targets.forEach(target => writeIntelligenceResult(target, [updated]));
+          item.results.set(result.id, updated);
+          item.expanded = true;
+          renderResults(); saveDraft();
+        });
+        text.replaceChildren(level, note, save, action('取消', renderResults));
+      });
+      row.append(text, edit, action('重新生成该维度', () => runBatch(false, item, result.id)));
     }
     list.append(row);
   }
@@ -212,6 +260,7 @@ for (const id of ['input-excel', 'output-template']) {
     state.workbook = null;
     state.matches = [];
     state.templateBytes = null;
+    $('overwrite-existing').checked = false;
     state.readyCount = 0;
     completedGroups.clear();
     $('download-excel').disabled = true;
@@ -309,6 +358,7 @@ $('parse-excel').addEventListener('click', async () => {
     state.workbook = null;
     state.matches = [];
     state.templateBytes = null;
+    $('overwrite-existing').checked = false;
     state.readyCount = 0;
     showSummary(error?.message || 'Excel 解析失败，请检查文件格式。', 'error');
     $('batch-progress').textContent = '';
@@ -353,17 +403,20 @@ async function requestIntelligences(student, notes, areas, guidance, noteMin, no
   }
 }
 
-async function runBatch(preview = false) {
+async function runBatch(preview = false, onlyStudent = null, onlyArea = null) {
   if (generating || parsing || connecting) return;
   if (!state.workbook) return showSummary('请先选择并匹配两个 Excel 文件。', 'error');
-  const areas = selectedAreas();
+  const areas = onlyArea ? [onlyArea] : selectedAreas();
   if (!areas.length) return showSummary('请至少选择一个智能维度。', 'error');
-  let ready = selectedStudents();
+  let ready = onlyStudent ? [onlyStudent] : selectedStudents();
   if (preview) ready = ready.filter(pendingFor).slice(0, 1);
   if (!ready.length) return showSummary('请勾选需要处理的学生。');
   const { noteMin, noteMax } = selectedNoteRange();
   const signature = `${noteMin}:${noteMax}`;
-  const isDone = (item, id) => completedGroups.get(item)?.get(id) === signature;
+  const overwrite = Boolean(onlyStudent || $('overwrite-existing').checked);
+  const regenerated = new Set();
+  const isDone = (item, id) => onlyStudent ? regenerated.has(id) :
+    protectedFor(item, id) || completedFor(item, id, signature);
   const needsModel = ready.some(item => areas.some(id => !isDone(item, id)) && item.notes?.trim() && item.notes.trim() !== '/');
   const accessCode = $('access-code').value.trim();
   if (needsModel) {
@@ -407,7 +460,9 @@ async function runBatch(preview = false) {
           ids => !item.notes?.trim() || item.notes.trim() === '/'
             ? Promise.resolve(ids.map(id => ({ id, level: 0, note: '' })))
             : requestIntelligences(item.student, item.notes, ids, state.guidance, noteMin, noteMax, accessCode),
-          result => {
+          results => {
+            const result = results.map(value => overwrite || item.results?.get(value.id)?.overwrite ? { ...value, overwrite: true } : value);
+            result.forEach(value => regenerated.add(value.id));
             item.targets.forEach(target => writeIntelligenceResult(target, result));
             if (!completedGroups.has(item)) completedGroups.set(item, new Map());
             if (!item.results) item.results = new Map();

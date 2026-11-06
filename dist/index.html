@@ -4,229 +4,85 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="根据教师的课堂观察，参考八大多元智能生成可编辑的儿童课程评价。">
-  <title>儿童课程评价助手</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231a6b5a'/%3E%3Cpath d='M17 17h30v30H17z' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M23 32l6 6 13-14' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <meta name="description" content="从本周课堂评价 Excel 批量生成多元智能成长记录。">
+  <title>Excel 批量填写｜儿童课程评价助手</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23286d59'/%3E%3Cpath d='M18 16h28v32H18zM18 27h28M29 16v32' fill='none' stroke='white' stroke-width='4'/%3E%3C/svg%3E">
   <style>
-    :root{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:#1c2524;background:#f5f6f5;font-size:16px}
-    *{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.58}
-    .app{min-height:100vh;display:grid;grid-template-columns:260px minmax(0,1fr)}
-    .sidebar{background:#f9faf9;border-right:1px solid #e4e8e5;padding:28px 20px;display:flex;flex-direction:column;gap:28px}
-    .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:1rem;letter-spacing:.01em}.brandmark{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:#1a6b5a;color:white;font-weight:800}
-    .sidebar h2{font-size:.82rem;font-weight:600;color:#78837e;margin:0 0 12px}.sidebar p{font-size:.88rem;line-height:1.65;color:#5d6863;margin:0 0 10px}.sidebar ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}.sidebar li{display:flex;gap:9px;align-items:flex-start;font-size:.9rem;line-height:1.5}.step{flex:0 0 21px;height:21px;border-radius:50%;background:#e7f1ed;color:#1a6b5a;display:grid;place-items:center;font-size:.76rem;font-weight:700}
-    .privacy{margin-top:auto;background:#edf4f0;border:1px solid #dbe9e1;border-radius:14px;padding:14px}.privacy strong{font-size:.86rem}.privacy p{font-size:.8rem;margin:6px 0 0}
-    main{padding:34px 30px 54px;min-width:0}.container{max-width:1120px;margin:auto}.top{margin-bottom:28px}.top h1{font-size:1.7rem;line-height:1.3;margin:0 0 7px;letter-spacing:-.02em}.top p{margin:0;color:#64706a;font-size:.92rem;line-height:1.6}
-    .workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.95fr);gap:18px;align-items:start}.card{background:#fff;border:1px solid #e1e6e2;border-radius:18px;box-shadow:0 2px 8px rgba(30,50,40,.025)}.card-head{padding:22px 24px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.card-head h2{margin:0;font-size:1.06rem}.card-head span{color:#7b8781;font-size:.8rem}.card-body{padding:20px 24px 24px}
-    label.field{display:block;font-weight:600;font-size:.88rem;margin-bottom:8px}.optional{font-weight:400;color:#88928d}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field-wrap{margin-bottom:19px}input[type=text],input[type=password],input[type=number],textarea{width:100%;border:1px solid #d9dfda;border-radius:11px;background:#fff;color:#1c2524;outline:none;padding:12px 13px;transition:border-color .15s,box-shadow .15s}input:focus,textarea:focus{border-color:#2b8a72;box-shadow:0 0 0 3px rgba(43,138,114,.13)}textarea{resize:vertical;line-height:1.65}.observation{min-height:158px}.hint{font-size:.79rem;line-height:1.5;color:#78837d;margin:7px 0 0}
-    .tags{display:flex;flex-wrap:wrap;gap:8px}.tag{position:relative}.tag input{position:absolute;opacity:0;width:1px;height:1px}.tag span{display:inline-flex;align-items:center;padding:8px 11px;border:1px solid #dfe5e0;border-radius:999px;color:#4f5d55;background:#fff;font-size:.84rem;line-height:1;white-space:nowrap;transition:.15s}.tag input:checked+span{background:#e6f3ec;border-color:#70b99a;color:#17684e}.tag input:focus-visible+span{outline:3px solid rgba(43,138,114,.25);outline-offset:2px}
-    .length-line{display:flex;justify-content:space-between;align-items:center;gap:12px}.length-line output{font-weight:700;color:#1a6b5a}.range{width:100%;accent-color:#1a6b5a;margin:8px 0 0}.ticks{display:flex;justify-content:space-between;color:#89938e;font-size:.75rem}
-    details{border-top:1px solid #edf0ed;padding-top:18px;margin-top:2px}summary{cursor:pointer;font-size:.9rem;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}summary::-webkit-details-marker{display:none}summary:after{content:'+';font-size:1.2rem;font-weight:400;color:#7c8981}details[open] summary:after{content:'−'}details .setting{padding-top:16px}.setting p{font-size:.84rem;color:#68776d;line-height:1.65;margin:8px 0 0}.connection{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:10px;background:#edf4f0;color:#1b654f;font-size:.83rem;font-weight:600}.connection:before{content:'';width:8px;height:8px;border-radius:50%;background:currentColor}.warning{background:#fff7e8;border:1px solid #f2e4c7;border-radius:10px;padding:10px 12px;color:#745a2d!important}
-    .actions{display:flex;align-items:center;gap:12px;margin-top:22px}.primary{border:0;background:#1a6b5a;color:#fff;padding:12px 20px;border-radius:11px;font-weight:650;min-height:46px}.primary:hover:not(:disabled){background:#155a4c}.source-note{font-size:.79rem;color:#7c8780}
-    .result-card{position:sticky;top:24px}.result-area{min-height:360px}.placeholder{height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;color:#84908a}.placeholder .symbol{display:grid;place-items:center;width:58px;height:58px;border:1px solid #dce6df;border-radius:17px;background:#f3f8f4;color:#40816d;font-size:1.6rem;margin-bottom:15px}.placeholder strong{color:#485a50;font-size:.94rem}.placeholder p{font-size:.86rem;line-height:1.6;margin:7px 0 0;max-width:270px}
-    .result-editor{display:none}.result-editor textarea{min-height:330px;border:0;padding:0;box-shadow:none!important;resize:vertical;font-size:.98rem;line-height:1.9}.result-editor textarea:focus{outline:none}.result-meta{border-top:1px solid #edf0ed;padding:15px 0 0;display:flex;justify-content:space-between;gap:10px;color:#7c8981;font-size:.8rem}.result-buttons{display:flex;gap:9px;margin-top:18px}.secondary{border:1px solid #d9e1db;border-radius:10px;padding:9px 14px;background:#fff;color:#24483a;font-weight:600}.secondary:hover{background:#f3f8f5}.status{min-height:42px;display:flex;align-items:center;border-radius:10px;padding:9px 12px;margin-bottom:15px;font-size:.83rem;line-height:1.5}.status.info{background:#eef6f2;color:#1c6a50}.status.warn{background:#fff7e9;color:#825f27}.status.error{background:#fff0ef;color:#a33a34}.status[hidden]{display:none}
-    footer{max-width:1120px;margin:22px auto 0;color:#88938d;font-size:.78rem;line-height:1.55}
-    @media(max-width:950px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:24px 18px 40px}.workspace{grid-template-columns:1fr}.result-card{position:static}.top{margin-bottom:20px}}
-    @media(max-width:560px){main{padding:19px 12px 30px}.top h1{font-size:1.45rem}.card-head{padding:18px 17px 0}.card-body{padding:18px 17px 20px}.row{grid-template-columns:1fr;gap:0}.result-area,.placeholder{min-height:260px}.result-editor textarea{min-height:270px}.actions{align-items:flex-start;flex-direction:column}}
-  </style>
-  <style>
-    :root{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:#242824;background:#f7f8f6}
-    [hidden]{display:none!important}
-    body{background:radial-gradient(circle at 75% 3%,#edf4ec 0,transparent 29%),#f7f8f6}
-    .app{grid-template-columns:264px minmax(0,1fr)}
-    .sidebar{position:sticky;top:0;height:100vh;background:#f4f6f3;border-right:1px solid #e5eae5;padding:28px 18px 20px;gap:0}
-    .brand{padding:0 10px 25px;gap:12px;font-size:.93rem;letter-spacing:-.01em;color:#26322c}
-    .brandmark{width:36px;height:36px;border-radius:12px;background:#286d59;box-shadow:0 5px 12px rgba(27,91,67,.16);font-size:.91rem}
-    .side-caption{padding:20px 12px 10px;border-top:1px solid #e4e9e4;color:#88938a;font-size:.69rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-    .sidebar h2{font-size:.74rem;letter-spacing:.05em;color:#8a948b;margin:0 0 15px;text-transform:uppercase}
-    .sidebar p{color:#657168;font-size:.82rem;line-height:1.75}
-    .sidebar ul{gap:5px}.sidebar li{position:relative;align-items:center;padding:10px 10px;border-radius:11px;color:#58665b;font-size:.83rem;line-height:1.4}
-    .sidebar li:first-child{background:#e7efe8;color:#315c46;font-weight:650}
-    .step{flex:0 0 23px;height:23px;background:#f9fbf9;color:#61816b;font-size:.7rem}
-    .sidebar li:first-child .step{background:#d5e6d8;color:#2b6b4a}
-    .side-principle{padding:22px 11px 0}
-    .privacy{background:#fff;border-color:#e5eae5;border-radius:15px;padding:16px;margin-top:auto;box-shadow:0 2px 8px rgba(34,55,36,.02)}
-    .privacy strong{display:flex;gap:8px;align-items:center;color:#435b47;font-size:.82rem}.privacy strong:before{content:'◌';color:#41805b;font-size:1.1rem}.privacy p{color:#738176;font-size:.75rem;line-height:1.65;margin:8px 0 0}
-    main{padding:0 30px 42px}.container{max-width:1130px}.topbar{height:66px;border-bottom:1px solid #e8ece8;display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .topbar-left{display:flex;align-items:center;gap:10px;color:#748076;font-size:.76rem;font-weight:650}.topbar-left strong{color:#3b4c3f;font-weight:750}.topbar-dot{width:4px;height:4px;border-radius:50%;background:#a7b3a9}
-    .topbar-right{font-size:.73rem;color:#496653;background:#fff;border:1px solid #dce7de;border-radius:999px;padding:7px 11px;text-decoration:none;font-weight:700}.topbar-right:hover{background:#edf5ee}
-    .top{margin:0;padding:36px 0 25px}.eyebrow{display:flex;align-items:center;gap:8px;color:#4c7960;font-size:.71rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;margin:0 0 10px}.eyebrow:before{content:'';width:18px;height:1px;background:#6a9d78}
-    .top h1{font-size:clamp(1.8rem,2.5vw,2.25rem);font-weight:720;letter-spacing:-.055em;margin:0 0 9px;line-height:1.24;color:#242b25}
-    .top p{color:#758077;font-size:.89rem;line-height:1.7;max-width:650px}
-    .workspace{grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:18px}
-    .card{border:1px solid #e6ebe6;border-radius:19px;box-shadow:0 8px 30px rgba(41,60,45,.035);overflow:hidden}
-    .card-head{padding:22px 25px 17px;border-bottom:1px solid #edf0ec;align-items:flex-start}.card-head h2{font-size:1.05rem;letter-spacing:-.02em;color:#29342c}.card-head span{font-size:.75rem;color:#98a29a}.section-kicker{display:block;color:#80a78b;font-size:.63rem;font-weight:850;letter-spacing:.13em;margin-bottom:7px}
-    .card-body{padding:22px 25px 25px}
-    label.field{font-size:.81rem;color:#39463c;margin-bottom:9px;font-weight:700}.optional{font-size:.74rem;color:#9ba59c;font-weight:500;margin-left:4px}
-    .field-wrap{margin-bottom:23px}.row{gap:14px}.row .field-wrap{margin-bottom:20px}
-    input[type=text],input[type=password],input[type=number],input[type=date],textarea{border:1px solid #e2e8e2;border-radius:11px;background:#fbfcfb;color:#27332b;padding:12px 13px;font-size:.89rem;box-shadow:0 1px 2px rgba(23,48,28,.02)}
-    input::placeholder,textarea::placeholder{color:#a2ada4}input:focus,textarea:focus{background:#fff;border-color:#77a889;box-shadow:0 0 0 4px rgba(76,139,91,.10)}
-    .observation{min-height:158px}.hint{color:#8c988e;font-size:.73rem;line-height:1.65}.field-foot{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.field-foot .hint{margin:8px 0 0}.field-count{white-space:nowrap;font-size:.71rem;color:#a0aba1;margin-top:9px}
-    .tags{gap:8px}.tag span{padding:9px 12px;border-color:#e3e9e3;background:#fff;color:#657268;font-size:.78rem;font-weight:580;transition:background .18s,border-color .18s,transform .18s}.tag span:hover{background:#f4f8f3;border-color:#a9c9ae;transform:translateY(-1px)}.tag input:checked+span{background:#e9f3e9;border-color:#87b990;color:#276b42;box-shadow:inset 0 0 0 1px rgba(55,128,73,.04)}
-    .area-note{display:flex;align-items:center;gap:7px;color:#849186;font-size:.73rem;margin:0 0 12px}.area-note:before{content:'✦';color:#6b9b73;font-size:.8rem}
-    .length-line output{color:#2a7650;font-size:.83rem}.range{accent-color:#337f58}.ticks{color:#a0aaa0;font-size:.7rem}
-    .credential-panel{border:1px solid #e3ebe4;background:#f8fbf8;border-radius:14px;padding:16px 17px 17px;margin-top:27px}.credential-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:7px}.credential-head strong{font-size:.85rem;color:#3d5946}.credential-panel p{font-size:.74rem;color:#849187;line-height:1.55;margin:0 0 13px}.credential-row{display:flex;gap:9px;align-items:center}.credential-row label{flex:0 0 88px;color:#596e5d;font-size:.77rem;font-weight:650}.credential-row input{min-width:0;flex:1;background:#fff}.connection{padding:5px 9px;border-radius:99px;background:#e9f3ea;color:#32784e;font-size:.66rem;font-weight:750;white-space:normal;text-align:right}.connection:before{width:6px;height:6px}.credential-foot{font-size:.7rem!important;color:#9ba69c!important;margin:9px 0 0!important}
-    .actions{margin-top:22px;justify-content:space-between}.primary{min-height:45px;background:#286e4d;border-radius:10px;padding:11px 21px;box-shadow:0 5px 12px rgba(30,103,68,.12);font-size:.85rem;transition:transform .18s,background .18s,box-shadow .18s}.primary:hover:not(:disabled){background:#205c40;transform:translateY(-1px);box-shadow:0 7px 16px rgba(30,103,68,.17)}.source-note{font-size:.72rem;color:#a0aba0}
-    .result-card{top:20px}.result-card .card-head{background:#fcfdfb}.result-card .card-head h2{display:flex;align-items:center;gap:8px}.result-card .card-head h2:before{content:'✦';color:#529169;font-size:.97rem}.result-area{min-height:485px}.placeholder{height:429px;min-height:0;color:#84958a;background:radial-gradient(circle at center,#f8fbf8 0,white 68%);border:1px dashed #e3eae3;border-radius:13px}.placeholder .symbol{width:68px;height:68px;border:0;border-radius:21px;background:linear-gradient(135deg,#e9f5e9,#f7faf5);box-shadow:0 7px 24px rgba(46,112,64,.08);color:#4f9a69;font-size:1.8rem}.placeholder strong{font-size:.94rem;color:#455e4b}.placeholder p{font-size:.79rem;color:#98a59b;max-width:245px}
-    .result-editor textarea{font-size:.94rem;line-height:1.95;color:#2e3b31;min-height:312px}.result-meta{font-size:.73rem}.result-buttons{justify-content:space-between}.secondary{font-size:.78rem;color:#42624c;border-color:#e1e8e1}.secondary:first-child{background:#edf5ee;border-color:#d7e8d9;color:#2c7047}.secondary:hover{background:#e8f2e9}.status{font-size:.77rem;border-radius:10px}.status.info{background:#edf6ee;color:#32734b}.status.warn{background:#fff7e9}.status.error{background:#fff0ef}
-    footer{margin-top:19px;color:#a0aaa0;font-size:.71rem}
-    @media(max-width:1050px){.app{grid-template-columns:220px minmax(0,1fr)}.sidebar{padding:24px 13px}.workspace{grid-template-columns:1fr}.result-card{position:static}.result-area{min-height:310px}.placeholder{height:270px}}
-    @media(max-width:740px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:0 18px 28px}.topbar{height:55px}.top{padding:28px 0 21px}.workspace{gap:15px}}
-    @media(max-width:560px){main{padding:0 13px 24px}.topbar-right{display:none}.top{padding:25px 2px 19px}.top h1{font-size:1.72rem}.top p{font-size:.82rem}.card-head{padding:19px 18px 14px}.card-body{padding:19px 18px 21px}.row{grid-template-columns:1fr;gap:0}.row .field-wrap{margin-bottom:19px}.credential-head{align-items:flex-start;flex-direction:column}.credential-row{display:block}.credential-row label{display:block;margin-bottom:8px}.credential-row input{width:100%}.actions{align-items:stretch;flex-direction:column}.primary{width:100%}.source-note{text-align:center}.result-area{min-height:300px}.placeholder{height:260px}.result-editor textarea{min-height:260px}}
-    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+    :root{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:#242824;background:#f7f8f6;font-size:16px}
+    *{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:radial-gradient(circle at 75% 3%,#edf4ec 0,transparent 29%),#f7f8f6}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}
+    .app{min-height:100vh;display:grid;grid-template-columns:264px minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;background:#f4f6f3;border-right:1px solid #e5eae5;padding:28px 18px 20px;display:flex;flex-direction:column}
+    .brand{display:flex;align-items:center;gap:12px;padding:0 10px 25px;font-weight:700;font-size:.93rem;color:#26322c}.brandmark{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:#286d59;color:#fff;box-shadow:0 5px 12px rgba(27,91,67,.16);font-weight:800}
+    .side-caption{padding:20px 12px 10px;border-top:1px solid #e4e9e4;color:#88938a;font-size:.69rem;font-weight:800;letter-spacing:.14em}.sidebar h2{font-size:.74rem;letter-spacing:.05em;color:#8a948b;margin:0 12px 15px}.sidebar ul{list-style:none;margin:0;padding:0;display:grid;gap:5px}.sidebar li{display:flex;gap:9px;align-items:center;padding:10px;border-radius:11px;color:#58665b;font-size:.83rem;line-height:1.4}.sidebar li:first-child{background:#e7efe8;color:#315c46;font-weight:650}.step{flex:0 0 23px;height:23px;border-radius:50%;background:#fff;color:#61816b;display:grid;place-items:center;font-size:.7rem;font-weight:700}.privacy{margin-top:auto;background:#fff;border:1px solid #e5eae5;border-radius:15px;padding:16px;color:#738176;font-size:.75rem;line-height:1.65}.privacy strong{display:block;color:#435b47;font-size:.82rem;margin-bottom:7px}
+    main{padding:0 30px 44px;min-width:0}.container{max-width:1080px;margin:auto}.topbar{height:66px;border-bottom:1px solid #e8ece8;display:flex;align-items:center;justify-content:space-between;gap:16px}.topbar-left{display:flex;align-items:center;gap:10px;color:#748076;font-size:.76rem;font-weight:650}.topbar-left strong{color:#3b4c3f}.dot{width:4px;height:4px;border-radius:50%;background:#a7b3a9}.page-link{font-size:.73rem;color:#496653;background:#fff;border:1px solid #dce7de;border-radius:999px;padding:7px 11px;text-decoration:none;font-weight:700}.page-link:hover{background:#edf5ee}
+    .top{padding:36px 0 25px}.eyebrow{display:flex;align-items:center;gap:8px;color:#4c7960;font-size:.71rem;font-weight:800;letter-spacing:.13em;margin-bottom:10px}.eyebrow:before{content:'';width:18px;height:1px;background:#6a9d78}.top h1{font-size:clamp(1.8rem,2.5vw,2.25rem);font-weight:720;letter-spacing:-.05em;margin:0 0 9px;line-height:1.24;color:#242b25}.top p{color:#758077;font-size:.89rem;line-height:1.7;max-width:720px;margin:0}
+    .card{background:#fff;border:1px solid #e6ebe6;border-radius:19px;box-shadow:0 8px 30px rgba(41,60,45,.035);overflow:hidden}.card-head{padding:22px 25px 17px;border-bottom:1px solid #edf0ec;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.card-head h2{font-size:1.05rem;margin:0;color:#29342c}.card-head span{font-size:.75rem;color:#98a29a}.kicker{display:block;color:#80a78b;font-size:.63rem;font-weight:850;letter-spacing:.13em;margin-bottom:7px}.card-body{padding:24px 25px 26px}
+    .section{padding:0 0 23px;margin-bottom:23px;border-bottom:1px solid #edf0ed}.section:last-of-type{border-bottom:0;margin-bottom:0}.section-title{font-size:.85rem;font-weight:750;color:#39463c;margin:0 0 13px}.file-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.file-box{border:1px dashed #cfdacf;border-radius:13px;padding:16px;background:#fafcf9}.file-box label{display:block;font-size:.82rem;font-weight:700;color:#3d4b40;margin-bottom:5px}.file-box p{margin:0 0 11px;color:#879188;font-size:.73rem;line-height:1.55}.file-box input{width:100%;font-size:.78rem;color:#627066}
+    .metadata-grid{display:grid;grid-template-columns:.65fr 1fr 1fr 1fr;gap:12px}.field-wrap label{display:block;font-size:.81rem;color:#39463c;margin-bottom:9px;font-weight:700}.optional{font-size:.74rem;color:#9ba59c;font-weight:500;margin-left:4px}input[type=text],input[type=password],input[type=number],input[type=date]{width:100%;border:1px solid #e2e8e2;border-radius:11px;background:#fbfcfb;color:#27332b;padding:12px 13px;font-size:.89rem;outline:none}input:focus{background:#fff;border-color:#77a889;box-shadow:0 0 0 4px rgba(76,139,91,.10)}
+    .area-note{display:flex;align-items:center;gap:7px;color:#849186;font-size:.73rem;margin:0 0 12px}.area-note:before{content:'✦';color:#6b9b73}.tags{display:flex;flex-wrap:wrap;gap:8px}.tag{position:relative}.tag input{position:absolute;opacity:0;width:1px;height:1px}.tag span{display:inline-flex;padding:9px 12px;border:1px solid #e3e9e3;border-radius:999px;background:#fff;color:#657268;font-size:.78rem;font-weight:580}.tag input:checked+span{background:#e9f3e9;border-color:#87b990;color:#276b42}.tag input:focus-visible+span{outline:3px solid rgba(43,138,114,.25);outline-offset:2px}.length-control{margin-top:19px;max-width:520px;padding:15px 17px;border:1px solid #e5ebe5;border-radius:13px;background:#fafcf9}.length-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;color:#3d4b40;font-size:.79rem;font-weight:700}.length-value{color:#28704b;font-variant-numeric:tabular-nums}.length-control input[type=range]{width:100%;accent-color:#367b58;cursor:pointer}.length-scale{display:flex;justify-content:space-between;color:#a0aaa2;font-size:.66rem;margin-top:4px}
+    .credential{display:grid;grid-template-columns:minmax(220px,1fr) minmax(280px,1.3fr);gap:16px;align-items:end}.connection{display:inline-flex;align-items:center;gap:7px;margin-left:8px;padding:5px 9px;border-radius:99px;background:#e9f3ea;color:#32784e;font-size:.66rem}.connection:before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}.connection.offline{background:#fff4e5;color:#8a6427}.help{font-size:.73rem;line-height:1.6;color:#879188;margin:0}
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.primary,.secondary{border-radius:10px;padding:10px 15px;font-weight:680;font-size:.82rem;min-height:42px}.primary{border:0;background:#286e4d;color:#fff;box-shadow:0 5px 12px rgba(30,103,68,.12)}.primary:hover:not(:disabled){background:#205c40}.secondary{border:1px solid #dbe4dc;background:#fff;color:#42624c}.secondary:hover:not(:disabled){background:#edf5ee}.progress{font-variant-numeric:tabular-nums;color:#68806e;font-size:.76rem}.summary{margin-top:15px;padding:12px 14px;border-radius:11px;background:#f2f7f2;color:#42604a;font-size:.79rem;line-height:1.65}.summary.error{background:#fff0ef;color:#9b3732}.note{margin:13px 0 0;color:#8c968e;font-size:.72rem;line-height:1.65}footer{margin:19px 0 0;color:#a0aaa0;font-size:.71rem}
+    @media(max-width:900px){.app{grid-template-columns:220px minmax(0,1fr)}.metadata-grid{grid-template-columns:1fr 1fr}.credential{grid-template-columns:1fr}}
+    @media(max-width:740px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:0 18px 28px}.topbar{height:55px}.top{padding:28px 0 21px}.file-grid{grid-template-columns:1fr}}
+    @media(max-width:560px){main{padding:0 13px 24px}.page-link{font-size:.68rem}.metadata-grid{grid-template-columns:1fr}.card-head{padding:19px 18px 14px}.card-body{padding:20px 18px 22px}.actions{align-items:stretch;flex-direction:column}.actions button{width:100%}.progress{text-align:center}}
   </style>
 </head>
 <body>
   <div class="app">
-    <aside class="sidebar" aria-label="使用说明">
-      <div class="brand"><span class="brandmark" aria-hidden="true">评</span><span>儿童课程评价助手</span></div>
-      <div class="side-caption">WORKSPACE · 教师工作台</div>
-      <div><h2>创作流程</h2><ul><li><span class="step">01</span><span>记录课堂里的真实表现</span></li><li><span class="step">02</span><span>选取观察视角与篇幅</span></li><li><span class="step">03</span><span>生成后核对、润色与复制</span></li></ul></div>
-      <div class="side-principle"><h2>写作原则</h2><p>看见具体的孩子，而不是给孩子贴标签。八大智能只是帮助老师发现不同的表现方式。</p></div>
-      <div class="privacy"><strong>隐私提醒</strong><p>本地模板不上传内容。使用 DeepSeek 时，课堂观察会经 Cloudflare 发送给模型服务。建议使用昵称，避免输入敏感信息。</p></div>
+    <aside class="sidebar" aria-label="Excel 批量填写流程">
+      <div class="brand"><span class="brandmark" aria-hidden="true">表</span><span>Excel 批量填写</span></div>
+      <div class="side-caption">BATCH WORKSPACE</div>
+      <h2>处理流程</h2>
+      <ul><li><span class="step">01</span><span>上传课堂评价与输出模板</span></li><li><span class="step">02</span><span>填写顶部信息并选择智能</span></li><li><span class="step">03</span><span>批量生成、核对并下载</span></li></ul>
+      <div class="privacy"><strong>数据说明</strong>Excel 在浏览器本地解析。生成时会发送学生姓名、课堂评价、所选维度和模板填写说明。草稿保存在当前浏览器，可恢复任务；正式结果请下载留存。</div>
     </aside>
     <main>
       <div class="container">
-        <div class="topbar"><div class="topbar-left"><strong>教师工作台</strong><span class="topbar-dot"></span><span>单人课程评价</span></div><a class="topbar-right" href="/excel.html">前往 Excel 批量填写 →</a></div>
-        <header class="top"><div class="eyebrow">EVALUATION STUDIO</div><h1>把课堂里的看见，写成有温度的评价。</h1><p>输入真实观察，参考八大多元智能的不同视角，生成一段可直接修改、适合分享的课程评价。</p></header>
-        <div class="workspace">
-          <section class="card" aria-labelledby="input-title">
-            <div class="card-head"><div><small class="section-kicker">01 / 课堂记录</small><h2 id="input-title">先写下你看见的</h2></div><span>仅观察内容必填</span></div>
-            <div class="card-body">
-              <div class="row">
-                <div class="field-wrap"><label class="field" for="student">学生称呼 <span class="optional">可选</span></label><input id="student" type="text" maxlength="20" autocomplete="off" placeholder="例如：小禾"></div>
-                <div class="field-wrap"><label class="field" for="course">课程名称 <span class="optional">可选</span></label><input id="course" type="text" maxlength="30" autocomplete="off" placeholder="例如：英语戏剧课"></div>
+        <div class="topbar"><div class="topbar-left"><strong>教师工作台</strong><span class="dot"></span><span>Excel 批量填写</span></div></div>
+        <header class="top"><div class="eyebrow">EXCEL WORKSPACE</div><h1>批量填写多元智能成长记录。</h1><p>系统先按姓名匹配，遇到新学生会自动写入模板的空白姓名行。选齐两个文件后自动匹配，默认生成八个智能。先预览一名学生，再批量处理；暂停或刷新后都可继续未完成部分。</p></header>
+        <section class="card" aria-labelledby="batch-title">
+          <div class="card-head"><div><small class="kicker">本地解析 / DEEPSEEK 生成</small><h2 id="batch-title">Excel 文件与填写设置</h2></div><span>支持动态学生人数</span></div>
+          <div class="card-body">
+            <div class="summary" style="margin:0 0 20px"><span id="draft-status" role="status">正在检查本机草稿…</span><div class="actions" style="margin-top:8px"><button class="secondary" id="restore-draft" type="button" hidden>恢复上次任务</button><button class="secondary" id="clear-draft" type="button">清除本机草稿</button></div><p class="help">自动保存文件、学生评价和生成结果到当前浏览器，不保存口令。共用电脑使用后可清除草稿。</p></div>
+            <div class="section">
+              <h3 class="section-title">1. 选择文件</h3>
+              <div class="file-grid">
+                <div class="file-box"><label for="input-excel">本周课堂评价</label><p>表头保持为“序号 / 孩子姓名 / 本周课堂评价”。</p><input id="input-excel" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
+                <div class="file-box"><label for="output-template">多元智能成长记录模板</label><p>可以使用空模板；系统会自动追加学生姓名。</p><input id="output-template" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
               </div>
-              <div class="field-wrap"><label class="field" for="notes">老师的观察 *</label><textarea id="notes" class="observation" maxlength="1500" placeholder="例如：能跟着节奏模仿动物叫声；主动邀请同伴一起表演；数到 8 时需要一点提醒。"></textarea><div class="field-foot"><p class="hint">写下具体行为、孩子的尝试，以及需要支持的地方。</p><span class="field-count" id="notes-count">0 / 1500</span></div></div>
-              <div class="field-wrap"><label class="field">八大智能观察视角 <span class="optional">可多选，也可留空</span></label><p class="area-note" id="area-count">还未选择，系统会根据观察内容判断</p><div class="tags" id="tags"></div></div>
-              <div class="field-wrap"><div class="length-line"><label class="field" for="length" style="margin:0">目标字数</label><output id="length-value" for="length">120字左右</output></div><input class="range" id="length" type="range" min="60" max="300" step="20" value="120"><div class="ticks"><span>60字</span><span>180字</span><span>300字</span></div></div>
-              <div class="credential-panel"><div class="credential-head"><strong>AI 辅助生成</strong><span id="connection" class="connection" role="status" aria-live="polite">正在检查连接…</span></div><p>输入个人访问口令可使用 DeepSeek；留空则使用本地模板。</p><div class="credential-row"><label for="access-code">个人口令</label><input id="access-code" type="password" autocomplete="off" spellcheck="false" placeholder="输入 Cloudflare 中设置的 APP_PASSWORD"></div><p class="credential-foot">API Key 无需输入网页。口令只在当前页面暂存，刷新后会清除。</p></div>
-              <div class="actions"><button class="primary" type="button" id="generate">生成评价</button><span class="source-note">生成后可直接修改文字</span></div>
             </div>
-          </section>
-          <section class="card result-card" aria-labelledby="result-title">
-            <div class="card-head"><div><small class="section-kicker">02 / 评价草稿</small><h2 id="result-title">评价结果</h2></div><span id="result-length">—</span></div>
-            <div class="card-body result-area">
-              <div id="status" class="status info" role="status" aria-live="polite" hidden></div>
-              <div id="placeholder" class="placeholder"><div class="symbol" aria-hidden="true">✦</div><strong>把具体的成长写下来</strong><p>填写左侧观察，点击生成后，可在这里继续编辑和复制。</p></div>
-              <div class="result-editor" id="result-editor"><label class="field" for="result-text">可直接编辑</label><textarea id="result-text" aria-label="生成的评价，可编辑"></textarea><div class="result-meta"><span id="result-source">来源：—</span><span id="live-count">0字</span></div><div class="result-buttons"><button class="secondary" type="button" id="copy">复制评价</button><button class="secondary" type="button" id="clear-result">清空结果</button></div></div>
+            <div class="section">
+              <h3 class="section-title">2. 填写成长记录顶部信息 <span class="optional">均可留空</span></h3>
+              <div class="metadata-grid" aria-label="成长记录顶部信息">
+                <div class="field-wrap"><label for="meta-week">周次</label><input id="meta-week" type="number" min="1" max="99" placeholder="例如：3"></div>
+                <div class="field-wrap"><label for="meta-date">记录日期</label><input id="meta-date" type="date"></div>
+                <div class="field-wrap"><label for="meta-teacher">带班老师</label><input id="meta-teacher" type="text" maxlength="30" placeholder="老师姓名"></div>
+                <div class="field-wrap"><label for="meta-class">班级</label><input id="meta-class" type="text" maxlength="30" placeholder="班级名称"></div>
+              </div>
             </div>
-          </section>
-        </div>
-        <footer>提示：生成内容仅供教师参考。正式使用前请核对事实、语气与学生实际情况。</footer>
+            <div class="section">
+              <h3 class="section-title">3. 选择本次生成的智能 <span class="optional">可多选</span></h3>
+              <p class="area-note" id="batch-area-count">请选择至少一个智能维度</p><div class="actions" style="margin-bottom:12px"><button class="secondary" type="button" id="select-all">全选八项</button><button class="secondary" type="button" id="select-none">清空选择</button></div><div class="tags" id="batch-tags"></div>
+              <div class="length-control">
+                <div class="length-head"><label for="note-length">每项亮点/观察记录字数</label><output id="note-length-value" class="length-value" for="note-length">130–150 字</output></div>
+                <input id="note-length" type="range" min="30" max="140" step="10" value="140" aria-label="每项亮点或观察记录的字数范围">
+                <div class="length-scale" aria-hidden="true"><span>简短</span><span>详细</span></div>
+              </div>
+            </div>
+            <div class="section">
+              <h3 class="section-title">4. 连接 DeepSeek</h3>
+              <div class="credential"><div class="field-wrap"><label for="access-code">个人访问口令 <span id="connection" class="connection" role="status" aria-live="polite">正在检查…</span></label><input id="access-code" type="password" autocomplete="off" spellcheck="false" placeholder="请输入个人访问口令"></div><p class="help">API Key 保存在 Cloudflare 服务端，无需在网页输入。个人口令只在当前页面暂存。</p></div>
+            </div>
+            <p><label><input id="overwrite-existing" type="checkbox"> 允许批量覆盖模板已有记录</label></p><p class="help">默认保留模板已有分数或观察记录。使用学生或维度的重新生成按钮时，会覆盖对应内容。</p><div class="actions"><button class="secondary" type="button" id="parse-excel">重新匹配文件</button><button class="secondary" type="button" id="preview-one" disabled>先生成一人预览</button><button class="primary" type="button" id="generate-batch" disabled>开始批量生成</button><button class="secondary" type="button" id="pause-batch" hidden>暂停</button><button class="secondary" type="button" id="download-excel" disabled>下载填写结果</button><span class="progress" id="batch-progress"></span></div>
+            <progress id="overall-progress" value="0" max="1" style="width:100%;margin-top:18px;accent-color:#286e4d" aria-label="生成进度"></progress><p class="help" id="next-step" style="margin-top:10px" role="status">先选择两个 Excel 文件，系统会自动匹配学生。</p><div class="actions" style="margin-top:16px"><input id="student-search" type="text" placeholder="搜索学生姓名" aria-label="搜索学生姓名" style="max-width:220px"><select id="student-filter" aria-label="筛选学生"><option value="all">全部学生</option><option value="pending">未完成</option><option value="failed">有失败记录</option></select><button class="secondary" type="button" id="students-all">全选当前名单</button><button class="secondary" type="button" id="students-none">取消当前名单</button><span id="student-count" class="help"></span></div><p class="help" style="margin-top:8px">筛选只改变显示范围；生成以勾选学生为准。预览会处理第一位勾选且尚未完成的学生。</p><div id="result-list" style="max-height:360px;overflow:auto;margin-top:14px" aria-label="学生匹配与生成结果"></div><div class="summary info" id="batch-summary" role="status" aria-live="polite" hidden></div>
+            <p class="note">新学生按模板工作表顺序写入空白姓名行。周次、日期、老师和班级会填写到所有成长记录工作表；留空则保留模板原内容。所选智能都会填写，未选择的列保持原样。</p>
+          </div>
+        </section>
+        <footer>请在正式使用前核对学生匹配、表现等级和观察记录。</footer>
       </div>
     </main>
   </div>
-  <script>
-    (() => {
-      'use strict';
-      const intelligences = [
-        {id:'language',name:'语言表达',positive:'愿意用自己的话表达想法，课堂交流较积极',tip:'继续在讲述和倾听中练习完整表达',keys:['说','讲','表达','复述','朗读','故事','回答','提问']},
-        {id:'logic',name:'逻辑数学',positive:'在数数和寻找规律的活动中有认真尝试',tip:'继续通过排序和小游戏巩固思考方法',keys:['数','计算','排序','规律','比较','分类','推理']},
-        {id:'spatial',name:'空间观察',positive:'能留意图形、颜色和位置的变化',tip:'继续在拼摆和观察中说出自己的发现',keys:['形状','图形','颜色','画','拼','位置','观察']},
-        {id:'body',name:'身体运动',positive:'乐于用动作参与活动，能跟着提示做出表现',tip:'继续在动作游戏中练习协调和表达',keys:['动作','表演','运动','模仿','跑','跳','手工']},
-        {id:'music',name:'音乐节奏',positive:'能感受节奏，愿意通过声音和歌曲参与课堂',tip:'继续在拍手和跟唱中保持自信',keys:['唱','音乐','节奏','拍手','声音','歌曲','听辨']},
-        {id:'social',name:'同伴合作',positive:'愿意与同伴合作，也会关注身边的朋友',tip:'继续练习轮流、倾听和共同完成任务',keys:['同伴','合作','帮助','邀请','分享','轮流','朋友']},
-        {id:'self',name:'自我认识',positive:'开始留意自己的感受，并尝试说出想法',tip:'继续鼓励其表达感受和需要',keys:['感受','情绪','喜欢','害怕','难过','自信','自己']},
-        {id:'nature',name:'自然观察',positive:'对动物、植物和周围环境保持好奇',tip:'继续在观察自然时提出问题、分享发现',keys:['动物','植物','自然','树','花','农场','环境','昆虫']}
-      ];
-      const $ = id => document.getElementById(id);
-      const tags = $('tags');
-      intelligences.forEach(item => {
-        const label = document.createElement('label'); label.className='tag';
-        const input=document.createElement('input'); input.type='checkbox'; input.value=item.id; input.name='intelligence';
-        const span=document.createElement('span'); span.textContent=item.name;
-        label.append(input,span); tags.append(label);
-      });
-      const count = text => Array.from((text||'').replace(/\s/g,'')).length;
-      const nameValue = () => $('student').value.trim().slice(0,20);
-      const courseValue = () => $('course').value.trim().slice(0,30);
-      const notesValue = () => $('notes').value.trim();
-      const selected = () => [...tags.querySelectorAll('input:checked')].map(el => intelligences.find(x=>x.id===el.value));
-      function updateAreaCount(){const n=selected().length;$('area-count').textContent=n?`已选择 ${n} 个观察视角，可再次点击取消`:'还未选择，系统会根据观察内容判断';}
-      tags.addEventListener('change',updateAreaCount);
-      $('notes').addEventListener('input',()=>{$('notes-count').textContent=$('notes').value.length+' / 1500';});
-      const detect = text => intelligences.map(item=>({item,score:item.keys.reduce((n,key)=>n+(text.includes(key)?1:0),0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).map(x=>x.item);
-      function setStatus(message,kind='info') { const el=$('status'); el.textContent=message; el.className='status '+kind; el.hidden=!message; }
-      function updateCount(){const n=count($('result-text').value);$('live-count').textContent=n+'字';$('result-length').textContent=n+'字';}
-      function showResult(text,source){$('placeholder').hidden=true;$('result-editor').style.display='block';$('result-text').value=text;$('result-source').textContent='来源：'+source;updateCount();}
-      function localReview(data){
-        const target=data.length;
-        const found=data.areas.length?data.areas:detect(data.notes);
-        const areas=found.slice(0,target<120?1:target<220?2:3);
-        const start=(data.name?data.name:'这位同学')+'在'+(data.course||'本次课程')+'中';
-        const noteLimit=Math.max(25,Math.min(125,Math.floor(target*0.48)));
-        const first='，'+(data.notes.length>noteLimit?data.notes.slice(0,noteLimit).replace(/[，；。\s]+$/,'')+'…':data.notes.replace(/[。！!？?\s]+$/,''))+'。';
-        let result=start+first;
-        const add = sentence => { if(count(result+sentence)<=target+14) result+=sentence; };
-        if(areas.length){const a=areas[0];add('从'+a.name+'方面看，'+a.positive+'。');}
-        if(areas.length>1)add('在'+areas[1].name+'方面也有自己的表现。');
-        if(areas.length>2 && target>=220)add('从'+areas[2].name+'的角度，也可以继续留意其在活动中的具体表现。');
-        const tips=areas.length?areas[0].tip:'继续在课堂活动中多尝试、多表达';
-        add('接下来可以'+tips+'。');
-        if(count(result)<target-24)add('期待在下一次活动中看到更多具体的尝试与进步。');
-        if(count(result)<target-28)add('老师会继续给予适当的提醒和支持。');
-        if(count(result)<target-36 && areas.length>1)add('在'+areas[1].name+'方面，可以继续通过熟悉的课堂活动练习。');
-        if(count(result)<target-40)add('也期待孩子把课堂中的小发现带到下一次学习中。');
-        return result;
-      }
-      async function deepseekReview(data,accessCode){
-        const controller=new AbortController();
-        const timer=setTimeout(()=>controller.abort(),35000);
-        try{
-          const response=await fetch('/api/evaluate',{method:'POST',headers:{'Content-Type':'application/json','X-App-Password':accessCode},credentials:'omit',body:JSON.stringify({student:data.name,course:data.course,notes:data.notes,length:data.length,areas:data.areas.map(x=>x.id)}),signal:controller.signal});
-          const json=await response.json();
-          if(!response.ok)throw new Error(json?.message||'本机服务暂时无法调用模型。');
-          const text=json?.text?.trim();
-          if(!text)throw new Error('模型没有返回评价。');
-          return text;
-        } finally {clearTimeout(timer);}
-      }
-      let modelReady=false;
-      async function checkConnection(){
-        const el=$('connection');
-        if(location.protocol==='file:'){el.textContent='文件模式：仅本地模板';modelReady=false;return;}
-        try{
-          const response=await fetch('/api/health',{cache:'no-store'});
-          if(!response.ok)throw new Error('unavailable');
-          const data=await response.json();
-          modelReady=!!data.model_configured;
-          el.textContent=modelReady?'Cloudflare 服务正常 · DeepSeek 已配置':'Cloudflare 服务正常 · DeepSeek 尚未配置';
-        }catch{modelReady=false;el.textContent='未连接到评价服务 · 仅本地模板';}
-      }
-      $('length').addEventListener('input',()=>{$('length-value').value=$('length').value+'字左右';});
-      checkConnection();
-      $('result-text').addEventListener('input',updateCount);
-      $('clear-result').addEventListener('click',()=>{$('result-editor').style.display='none';$('placeholder').hidden=false;$('result-length').textContent='—';setStatus('');});
-      $('copy').addEventListener('click',async()=>{const text=$('result-text').value;if(!text)return;try{await navigator.clipboard.writeText(text);setStatus('已复制评价。','info');}catch{const el=$('result-text');el.focus();el.select();setStatus('无法自动复制，已选中文字，请手动复制。','warn');}});
-      $('generate').addEventListener('click',async()=>{
-        const notes=notesValue();if(!notes){$('notes').focus();setStatus('请先填写老师的课堂观察。','error');return;}
-        const data={name:nameValue(),course:courseValue(),notes,areas:selected(),length:Number($('length').value)};
-        const accessCode=$('access-code').value.trim();const button=$('generate');button.disabled=true;button.textContent=modelReady&&accessCode?'正在生成…':'生成评价';
-        try{
-          if(modelReady&&accessCode){setStatus('正在通过 Cloudflare 生成评价…','info');try{const text=await deepseekReview(data,accessCode);showResult(text,'DeepSeek');setStatus('已生成。请核对并按需要修改。','info');}catch(error){showResult(localReview(data),'本地模板');const reason=error?.name==='AbortError'?'请求超时。':error?.message||'连接失败。';setStatus(reason+' 已自动改用本地模板。','warn');}}
-          else{showResult(localReview(data),'本地模板');setStatus(modelReady?'已使用本地模板。如需 DeepSeek 评价，请填写个人访问口令。':'已使用本地模板。请检查 Cloudflare 中的 DeepSeek 密钥和个人口令配置。','info');}
-        }finally{button.disabled=false;button.textContent='生成评价';}
-      });
-      if(document.modelContext?.registerTool){
-        const tool={
-          name:'generate_local_evaluation',title:'生成本地课程评价',
-          description:'根据教师提供的课堂观察和八大智能观察维度，用页面内的本地模板生成可编辑的中文评价，不发送网络请求。',
-          inputSchema:{type:'object',properties:{notes:{type:'string',minLength:1,maxLength:1500},student:{type:'string',maxLength:20},course:{type:'string',maxLength:30},length:{type:'integer',minimum:60,maximum:300},areas:{type:'array',items:{type:'string',enum:intelligences.map(x=>x.id)},maxItems:8}},required:['notes'],additionalProperties:false},
-          annotations:{readOnlyHint:false,untrustedContentHint:false},
-          execute(input){
-            if(!input||typeof input.notes!=='string'||!input.notes.trim()||input.notes.length>1500)throw new Error('请提供1-1500字的课堂观察。');
-            if(input.length!==undefined&&(!Number.isInteger(input.length)||input.length<60||input.length>300))throw new Error('目标字数须为60-300。');
-            if(input.areas!==undefined&&(!Array.isArray(input.areas)||input.areas.some(id=>!intelligences.some(x=>x.id===id))))throw new Error('观察维度无效。');
-            const data={name:String(input.student||'').slice(0,20),course:String(input.course||'').slice(0,30),notes:input.notes.trim(),length:input.length||120,areas:(input.areas||[]).map(id=>intelligences.find(x=>x.id===id))};
-            $('student').value=data.name;$('course').value=data.course;$('notes').value=data.notes;$('notes-count').textContent=data.notes.length+' / 1500';$('length').value=data.length;$('length-value').value=data.length+'字左右';
-            tags.querySelectorAll('input').forEach(el=>{el.checked=(input.areas||[]).includes(el.value);});updateAreaCount();
-            const review=localReview(data);showResult(review,'本地模板');setStatus('已使用本地模板生成。','info');
-            return {review,character_count:count(review),source:'local_template'};
-          }
-        };
-        try{Promise.resolve(document.modelContext.registerTool(tool)).catch(()=>{});}catch{}
-      }
-    })();
-  </script>
+  <script src="/vendor/exceljs.min.js"></script>
+  <script type="module" src="/excel-page.js"></script>
 </body>
 </html>

@@ -41,8 +41,6 @@ test('slash observations become zero and save to Excel without retries', async (
   const { writeIntelligenceResult } = await import('../dist/batch-excel.js');
   const book = new ExcelJS.Workbook();
   const sheet = book.addWorksheet('记录');
-  sheet.getCell('A1').value = 4;
-  sheet.getCell('B1').value = '旧记录';
   let calls = 0;
   const failures = await generateDimensionGroups(['music'], async () => {
     calls++;
@@ -53,4 +51,18 @@ test('slash observations become zero and save to Excel without retries', async (
   assert.equal(calls, 1);
   assert.equal(sheet.getCell('A1').value, 0);
   assert.equal(sheet.getCell('B1').value, null);
+});
+
+test('existing grade or note protects the pair until explicit overwrite; edits persist to Excel', async () => {
+  const { default: ExcelJS } = await import('exceljs');
+  const { writeIntelligenceResult } = await import('../dist/batch-excel.js');
+  const sheet = new ExcelJS.Workbook().addWorksheet('记录');
+  const target = { worksheet: sheet, row: 1, columns: { music: { level: 1, note: 2 } } };
+  sheet.getCell('B1').value = '已有记录';
+  writeIntelligenceResult(target, [{ id: 'music', level: 0, note: '' }]);
+  assert.equal(sheet.getCell('A1').value, null);
+  assert.equal(sheet.getCell('B1').value, '已有记录');
+  writeIntelligenceResult(target, [{ id: 'music', level: 4, note: '教师修订', overwrite: true }]);
+  assert.equal(sheet.getCell('A1').value, 4);
+  assert.equal(sheet.getCell('B1').value, '教师修订');
 });

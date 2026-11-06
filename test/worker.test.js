@@ -45,19 +45,13 @@ test('static pages use Cloudflare asset binding', async () => {
   assert.equal(await response.text(), 'page');
 });
 
-test('single evaluation and Excel batch tools live on separate pages', async () => {
-  const [home, excel] = await Promise.all([
-    readFile(new URL('../dist/index.html', import.meta.url), 'utf8'),
-    readFile(new URL('../dist/excel.html', import.meta.url), 'utf8'),
-  ]);
-  assert.match(home, /先写下你看见的/);
-  assert.match(home, /href="\/excel\.html"/);
-  assert.doesNotMatch(home, /id="input-excel"/);
-  assert.match(excel, /id="input-excel"/);
-  assert.match(excel, /id="batch-tags"/);
-  assert.match(excel, /id="note-length"/);
-  assert.match(excel, /返回单人课程评价/);
-  assert.doesNotMatch(excel, /id="notes"/);
+test('home opens Excel batch and old bookmarks redirect', async () => {
+  const home = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+  const redirects = await readFile(new URL('../dist/_redirects', import.meta.url), 'utf8');
+  assert.match(home, /id="input-excel"/);
+  assert.match(home, /id="preview-one"/);
+  assert.doesNotMatch(home, /返回单人课程评价/);
+  assert.ok(redirects.includes('/excel.html / 302'));
 });
 
 test('cross-origin submissions and wrong password cannot call the model', async () => {

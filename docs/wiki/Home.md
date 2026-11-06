@@ -18,7 +18,6 @@ flowchart LR
 
 | 我想做什么 | 阅读页面 |
 | --- | --- |
-| 写一段评语并复制 | [单人课程评价](Single-Evaluation.md) |
 | 准备本周评价和输出模板 | [文件准备与匹配](Files-and-Matching.md) |
 | 只处理部分学生，设置智能与字数 | [学生选择与设置](Students-and-Settings.md) |
 | 先试一人，再处理全班 | [预览与批量生成](Preview-and-Batch.md) |

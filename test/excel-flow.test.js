@@ -21,7 +21,7 @@ async function setup(request) {
   document.getElementById('access-code').value = 'fake';
   const writes = [];
   const context = vm.createContext({ document, DIMENSIONS, generateDimensionGroups, snapshotDraft, createDraftStore: () => ({ read: async () => null, write: async () => {}, clear: async () => {} }), AbortController, setTimeout, clearTimeout, console,
-    writeIntelligenceResult: (_, result) => writes.push(...result),
+    hasOriginalResult: () => false, writeIntelligenceResult: (_, result) => writes.push(...result),
     fetch: async url => url === '/api/health' ? Response.json({ model_configured: true }) : request(),
   });
   const source = (await readFile(new URL('../dist/excel-page.js', import.meta.url), 'utf8')).replace(/import[\s\S]*?from\s+'[^']+';/g, '');
@@ -95,4 +95,15 @@ test('draft snapshot includes template, results, selection and progress but excl
   assert.deepEqual(draft.records[0].completed, [['music', '130:150']]);
   assert.equal(draft.records[0].results[0].level, 4);
   assert.ok(!JSON.stringify(draft).includes('must-not-store'));
+});
+
+test('regenerating one completed dimension updates only that dimension of the named student', async () => {
+  const app = await setup(() => { throw new Error('no model needed'); });
+  vm.runInContext("state.matches[0].notes = '/';", app.context);
+  await app.click();
+  const run = vm.runInContext("runBatch(false, state.matches[0], 'music')", app.context);
+  await run;
+  assert.equal(app.writes.length, 9);
+  assert.equal(app.writes[8].id, 'music');
+  assert.equal(app.writes[8].overwrite, true);
 });

@@ -2,13 +2,13 @@
 
 ## 图文使用文档
 
-- [使用指南首页](docs/wiki/Home.md)：单人评价、Excel 批处理、学生选择、预览、草稿恢复、下载规则和常见问题。
+- [使用指南首页](docs/wiki/Home.md)：Excel 批处理、学生选择、预览、草稿恢复、下载规则和常见问题。
 - [下载 PDF 使用说明书](output/pdf/儿童课程评价助手_图文使用说明书.pdf)。
 
 文档包含 6 张实际界面插图；截图使用虚构学生，本机演示的连接状态不代表线上故障。
 
 
-这版把网页和 DeepSeek 代理放在同一个 Cloudflare Worker 上，浏览器只请求本站的 `/api/evaluate`，不再直接跨域调用 DeepSeek。DeepSeek API Key 只作为 Cloudflare Secret 保存在服务端。
+这版把网页和 DeepSeek 代理放在同一个 Cloudflare Worker 上，批处理页面请求本站的 `/api/evaluate-intelligences`，不再直接跨域调用 DeepSeek。DeepSeek API Key 只作为 Cloudflare Secret 保存在服务端。
 
 ## 部署
 
@@ -19,7 +19,7 @@ npx wrangler@latest login
 npm run deploy
 ```
 
-首次部署时没有密钥，页面只能使用本地模板，这是正常且安全的。然后分别运行下列命令，按提示输入真实值：
+首次部署后，需要配置密钥才能使用 DeepSeek。然后分别运行下列命令，按提示输入真实值：
 
 ```bash
 npx wrangler@latest secret put DEEPSEEK_API_KEY
@@ -42,7 +42,7 @@ npm run dev
 
 ## Excel 批量填写
 
-系统分为两个独立页面：首页 `/` 保留原有的单人课程评价，`/excel.html` 用于 Excel 批量处理。两个页面顶部可以互相切换。
+首页 `/` 直接打开 Excel 批量填写；旧批处理链接 `/excel.html` 会跳转到首页。单人预览仍可在批处理内使用。
 
 Excel 批量页面的处理流程：
 
